@@ -1,0 +1,15 @@
+#!/bin/bash
+
+git checkout -q master || exit 1
+git pull -q || exit 2
+ISSUE=${1^^}
+SUMMARY=`jira view dev-$1 | grep summary: | cut -c10-` || exit 3
+BRANCH=`echo $ISSUE/$SUMMARY | sed 's/ /-/g' | sed 's/[^-0-9a-zA-ZåäöÅÄÖ.\/]//g'`
+
+git rev-parse --verify $BRANCH &> /dev/null
+
+if [ "$?" == "0" ]; then
+  git checkout $BRANCH
+else
+  git checkout -b $BRANCH
+fi

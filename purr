@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo Getting branch...
+RAW=`git rev-parse --abbrev-ref HEAD`
+BRANCH=`echo $RAW | sed 's/-/ /g' | sed 's/\//: /'`
+echo Pushing...
+git push -u 
+
+deploy-branch "lingio" "$RAW"
+URL=`cat /tmp/deploy-branch`
+
+echo Creating pull request...
+hub pull-request -r Zanshe -F- <<<"$BRANCH 
+
+Deploy: $URL"
