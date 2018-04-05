@@ -10,9 +10,6 @@ yarn build
 echo --- Uploading build
 cd build && tar -cz . | ssh builds@wappia.net "rm -rf $FOLDER ; mkdir $FOLDER && cd $FOLDER && tar -xz"
 
-echo --- Enabling HTTPS
-ssh builds@wappia.net "echo $SUBDOMAIN.$PRODUCT.wappia.net | nc localhost 1515"
-
 echo --- deployed at $URL
 
 echo $URL > /tmp/deploy-branch
