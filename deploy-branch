@@ -1,6 +1,17 @@
 #!/bin/bash
 
-SUBDOMAIN=`echo $2 | sed 's/[^a-zA-Z0-9]/-/g'`
+if [ -z "$1" ]; then
+  echo "Missing company parameter (e.g. Lingio)"
+  exit 1
+fi
+
+if [ -z "$2" ]; then
+  BRANCH=`git rev-parse --abbrev-ref HEAD | sed 's/-/ /g' | sed 's/\//: /'`
+else
+  BRANCH="$2"
+fi
+
+SUBDOMAIN=`echo $BRANCH | sed 's/[^a-zA-Z0-9]/-/g'`
 PRODUCT=$1
 FOLDER="$PRODUCT.wappia.net/$SUBDOMAIN"
 URL="https://$SUBDOMAIN.$PRODUCT.wappia.net"
