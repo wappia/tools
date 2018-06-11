@@ -6,7 +6,7 @@ FOLDER="$PRODUCT.wappia.net/$SUBDOMAIN"
 URL="https://$SUBDOMAIN.$PRODUCT.wappia.net"
 
 echo --- Building...
-yarn build
+npm run build
 echo --- Uploading build
 cd build && tar -cz . | ssh builds@wappia.net "rm -rf $FOLDER ; mkdir $FOLDER && cd $FOLDER && tar -xz"
 
