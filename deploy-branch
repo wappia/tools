@@ -19,7 +19,7 @@ URL="https://$SUBDOMAIN.$PRODUCT.wappia.net"
 echo --- Building...
 npm run build
 echo --- Uploading build
-cd build && tar -cz . | ssh builds@wappia.net "rm -rf $FOLDER ; mkdir $FOLDER && cd $FOLDER && tar -xz"
+cd build && tar -cz . | ssh builds@wappia.net "rm -rf $FOLDER ; mkdir -p $FOLDER && cd $FOLDER && tar -xz"
 
 echo --- deployed at $URL
 
