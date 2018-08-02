@@ -17,6 +17,7 @@ FOLDER="$PRODUCT.wappia.net/$SUBDOMAIN"
 URL="https://$SUBDOMAIN.$PRODUCT.wappia.net"
 
 echo --- Building...
+export REACT_APP_VERSION="`git rev-list --all --count`"
 npm run build
 echo --- Uploading build
 cd build && tar -cz . | ssh builds@wappia.net "rm -rf $FOLDER ; mkdir -p $FOLDER && cd $FOLDER && tar -xz"
