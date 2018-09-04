@@ -2,18 +2,22 @@
 
 . env.sh
 
-if [ -z "$1" ]; then
+clubhouse_id="$1"
+user="mika"
+token="$CLUBHOUSE_API_TOKEN"
+
+if [ -z "$clubhouse_id" ]; then
   echo "Missing Clubhouse ID (e.g. 1234)"
   exit 1
 fi
 
 re='^[0-9]+$'
-if ! [[ $1 =~ $re ]] ; then
+if ! [[ $clubhouse_id =~ $re ]] ; then
    echo "error: Clubhouse ID not a number" >&2
    exit 1
 fi
 
-story=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/stories/$1?token=$CLUBHOUSE_API_TOKEN"`
+story=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$CLUBHOUSE_API_TOKEN"`
 
 re=',"name":"([^"]+)"'
 if [[ $story =~ $re ]]; then
@@ -26,7 +30,7 @@ else
 fi
 
 convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
-branch="mika/ch$1/${convert,,}"
+branch="mika/ch$clubhouse_id/${convert,,}"
 
 if [ `git branch | egrep "^[[:space:]]+${branch}$"` ]; then
   git checkout $branch
@@ -42,4 +46,4 @@ else
   git push -u
 fi
 
-curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$1?token=$CLUBHOUSE_API_TOKEN" > /dev/null
+curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
