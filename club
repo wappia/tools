@@ -36,12 +36,11 @@ if [ `git branch | egrep "^[[:space:]]+${branch}$"` ]; then
   git checkout $branch
 else
   current_branch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "$branch" != "master" ]]; then
+  if [[ "$current_branch" != "master" ]]; then
     echo "Refusing to create new branch from $current_branch. Check out master branch and try again."
     exit 3
   fi
 
-  echo "Checking out new branch $branch"
   git checkout -b $branch
   git push -u
 fi
