@@ -3,7 +3,7 @@
 . env.sh
 
 clubhouse_id="$1"
-user="mika"
+user="$CLUBHOUSE_USER"
 token="$CLUBHOUSE_API_TOKEN"
 
 if [ -z "$clubhouse_id" ]; then
