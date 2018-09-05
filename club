@@ -30,19 +30,26 @@ else
 fi
 
 convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
-branch="$user/ch$clubhouse_id/${convert,,}"
 
-if [ `git branch | egrep "^[[:space:]]+${branch}$"` ]; then
-  git checkout $branch
-else
+existing_branch=`node -e "
+  const json = JSON.parse('$story')
+  if (json.branches.length > 0) {
+    console.log(json.branches[0].name);
+  }
+"`
+
+if [ -z "$existing_branch" ]; then
   current_branch=$(git rev-parse --abbrev-ref HEAD)
   if [[ "$current_branch" != "master" ]]; then
     echo "Refusing to create new branch from $current_branch. Check out master branch and try again."
     exit 3
   fi
 
-  git checkout -b $branch
+  git checkout -b $user/ch$clubhouse_id/${convert,,}
   git push -u
+else
+  git fetch
+  git checkout $existing_branch
 fi
 
 curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
