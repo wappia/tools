@@ -17,7 +17,7 @@ if ! [[ $clubhouse_id =~ $re ]] ; then
    exit 1
 fi
 
-story=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$CLUBHOUSE_API_TOKEN"`
+story=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token"`
 
 re=',"name":"([^"]+)"'
 if [[ $story =~ $re ]]; then
