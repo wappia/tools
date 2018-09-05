@@ -10,7 +10,14 @@ git push -u
 deploy-branch "lingio" "$RAW"
 URL=`cat /tmp/deploy-branch`
 
+regex="ch([0-9]+)/"
+if [[ $BRANCH =~ $regex ]]; then
+  clubhouse_id="${BASH_REMATCH[1]}"
+fi
+
 echo Creating pull request...
 hub pull-request -r Zanshe -F- <<<"$BRANCH 
 
-Deploy: $URL"
+[Deploy]($URL)
+
+[Clubhouse](https://app.clubhouse.io/lingio/story/$clubhouse_id)"
