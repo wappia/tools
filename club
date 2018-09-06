@@ -47,9 +47,11 @@ if [ -z "$existing_branch" ]; then
 
   git checkout -b $user/ch$clubhouse_id/${convert,,}
   git push -u
+
+  echo Moving story to \"In Progress\"
+  curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
+  echo All done.
 else
   git fetch
   git checkout $existing_branch
 fi
-
-curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
