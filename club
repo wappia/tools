@@ -31,10 +31,11 @@ fi
 
 convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
 
+branches=`echo $story | jq -r '.branches'`
+
 existing_branch=`node -e "
-  const json = JSON.parse('$story')
-  if (json.branches.length > 0) {
-    console.log(json.branches[0].name);
+  if ($branches.length > 0) {
+    console.log($branches[0].name);
   }
 "`
 
