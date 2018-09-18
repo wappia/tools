@@ -33,8 +33,6 @@ convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
 
 existing_branch=`echo $story | jq -r '.branches[0].name'`
 
-echo $existing_branch
-
 if [ "$existing_branch" = 'null' ]; then
   git fetch
   git checkout $existing_branch
