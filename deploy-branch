@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ -z "$2" ]; then
-  BRANCH=`git rev-parse --abbrev-ref HEAD | sed 's/-/ /g' | sed 's/\//: /'`
+  BRANCH=`git rev-parse --abbrev-ref HEAD`
 else
   BRANCH="$2"
 fi
