@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [ "$1" = "help" ]; then
+  echo "
+Usage:
+club <CLUBHOUSE_ID>
+
+EXAMPLE:
+club 1234
+"
+  exit 0
+fi
+
 . env.sh
 
 clubhouse_id="$1"
@@ -7,8 +18,8 @@ user="$CLUBHOUSE_USER"
 token="$CLUBHOUSE_API_TOKEN"
 
 if [ -z "$clubhouse_id" ]; then
-  echo "Missing Clubhouse ID (e.g. 1234)"
-  exit 1
+  git checkout master
+  exit 0
 fi
 
 re='^[0-9]+$'
