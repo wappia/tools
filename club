@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [ "$1" = "help" ]; then
+  echo "
+Usage:
+club <CLUBHOUSE_ID>
+
+EXAMPLE:
+club 1234
+"
+  exit 0
+fi
+
 . env.sh
 
 clubhouse_id="$1"
@@ -7,8 +18,8 @@ user="$CLUBHOUSE_USER"
 token="$CLUBHOUSE_API_TOKEN"
 
 if [ -z "$clubhouse_id" ]; then
-  echo "Missing Clubhouse ID (e.g. 1234)"
-  exit 1
+  git checkout master
+  exit 0
 fi
 
 re='^[0-9]+$'
@@ -34,18 +45,15 @@ convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
 existing_branch=`echo $story | jq -r '.branches[0].name'`
 
 if [ "$existing_branch" = 'null' ]; then
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-  if [[ "$current_branch" != "master" ]]; then
-    echo "Refusing to create new branch from $current_branch. Check out master branch and try again."
-    exit 3
+  git checkout master && git checkout -b $user/ch$clubhouse_id/${convert,,} && git push -u
+
+  if [ $? -eq 0 ]; then
+    echo Moving story to \"In Progress\"
+    curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
+    echo All done.
+  else
+    echo Something went wrong, not moving Clubhouse issue
   fi
-
-  git checkout -b $user/ch$clubhouse_id/${convert,,}
-  git push -u
-
-  echo Moving story to \"In Progress\"
-  curl --silent -X PUT -H "Content-Type: application/json" -d '{ "workflow_state_id": 500000019 }' -L "https://api.clubhouse.io/api/v2/stories/$clubhouse_id?token=$token" > /dev/null
-  echo All done.
 else
   git fetch
   git checkout $existing_branch
