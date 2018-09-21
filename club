@@ -11,6 +11,11 @@ club 1234
   exit 0
 fi
 
+if [[ `git status --porcelain` ]]; then 
+  echo "You have unsaved changes. Please commit or stash them before running this command." 
+  exit 5
+fi
+
 . env.sh
 
 clubhouse_id="$1"
@@ -43,7 +48,7 @@ convert=`echo $name | sed 's/[^a-zA-Z]/-/g'`
 existing_branch=`echo $story | jq -r '.branches[0].name'`
 
 if [ "$existing_branch" = 'null' ]; then
-  git checkout master && git checkout -b $user/ch$clubhouse_id/${convert,,} && git push -u
+  git checkout master && git pull && git checkout -b $user/ch$clubhouse_id/${convert,,} && git push -u
 
   if [ $? -eq 0 ]; then
     echo Moving story to \"In Progress\"
