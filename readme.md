@@ -1,7 +1,7 @@
 
 # Wappia tools
 
-Happy to share these tools we use at Wappia.
+We use these tools at Wappia, and happy to share with all of you!
 
 1. Place this folder somewhere in your PATH. 
 2. Copy the env.sh.example to env.sh and replace each key with your own. 
