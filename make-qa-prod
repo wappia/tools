@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ssh builds@xod.se "cd lingio.wappia.net/qa && sed --in-place 's/injectedEnv=\"development\"/injectedEnv=\"production\"/' ./index.html && cat index.html" | egrep 'injectedEnv="[^"]+"'
+make-prod lingio qa

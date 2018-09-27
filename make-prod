@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  echo "Must provide customer, e.g. lingio"
+  exit 1
+fi
+
+if [ -z "$2" ]; then
+  echo "Must provide branch, e.g. qa"
+  exit 2
+fi
+
+ssh builds@xod.se "cd \"$1.wappia.net/$2\" && sed --in-place 's/injectedEnv=\"development\"/injectedEnv=\"production\"/' ./index.html && cat index.html" | egrep 'injectedEnv="[^"]+"'
