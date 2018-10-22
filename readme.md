@@ -5,6 +5,7 @@
 2. Copy the env.sh.example to env.sh and replace each key with your own. 
 3. Install `jq`, probably `sudo apt install jq`
 4. Install `hub`, from Github, if you need `purr` command
+5. You will need to set some environment variables, as listend in the [env.sh.example](./env.sh.example) file. You may set them wherever you want, but for more granular control we recomend using a tool such as [direnv](https://direnv.net/). This way you can have different settings for different organisations and projects.
 
 
 ## Club
