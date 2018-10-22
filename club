@@ -16,11 +16,9 @@ if [[ `git status --porcelain` ]]; then
   exit 5
 fi
 
-. env.sh
-
 clubhouse_id="$1"
-user="$CLUBHOUSE_USER"
-token="$CLUBHOUSE_API_TOKEN"
+user="$tools_clubhouse_user"
+token="$tools_clubhouse_api_token"
 
 if [ -z "$clubhouse_id" ]; then
   git checkout master

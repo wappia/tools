@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. env.sh
-token=$CLUBHOUSE_API_TOKEN
+token=$tools_clubhouse_api_token
+organisation=$tools_organisation
 
 echo Getting branch...
 RAW=`git rev-parse --abbrev-ref HEAD`
@@ -30,11 +30,11 @@ if [ "$name" = 'null' ]; then
   exit 2
 fi
 
-deploy-branch "lingio" "$RAW"
+deploy-branch "$organisation" "$RAW"
 URL=`cat /tmp/deploy-branch`
 
 echo Creating pull request...
-hub pull-request -r "$REVIEWER" -F- <<<"$name 
+hub pull-request -r "$tools_reviewers" -F- <<<"$name 
 
 ### Clubhouse
 [ch$clubhouse_id](https://app.clubhouse.io/lingio/story/$clubhouse_id)
