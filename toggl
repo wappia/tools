@@ -12,7 +12,6 @@ curl -s -o /dev/null -u $token:api_token -X GET https://www.toggl.com/api/v8/me
 
 if [ ! -z $project_id ]; then
   if [ "$project_id" = null ]; then
-    # Project id is specifically set to null. Add it to the default project
     existing_project_id=$default_pid
   else
     existing_project_id=`curl -s -u $token:api_token -X GET https://www.toggl.com/api/v8/workspaces/$wid/projects | jq ".[] | select(.name|test(\"($project_id)\")) | .id"`
