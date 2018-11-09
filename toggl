@@ -3,6 +3,7 @@
 token=$tools_toggl_api_token
 wid=$tools_toggl_workspace_id
 cid=$tools_toggl_client_id
+default_pid=$tools_toggl_project_id
 description="$1"
 project_id="$2"
 project_name="$3"
@@ -10,10 +11,17 @@ project_name="$3"
 curl -s -o /dev/null -u $token:api_token -X GET https://www.toggl.com/api/v8/me
 
 if [ ! -z $project_id ]; then
-  existing_project_id=`curl -s -u $token:api_token -X GET https://www.toggl.com/api/v8/workspaces/$wid/projects | jq ".[] | select(.name|test(\"($project_id)\")) | .id"`
+  if [ "$project_id" = null ]; then
+    # Project id is specifically set to null. Add it to the default project
+    existing_project_id=$default_pid
+  else
+    existing_project_id=`curl -s -u $token:api_token -X GET https://www.toggl.com/api/v8/workspaces/$wid/projects | jq ".[] | select(.name|test(\"($project_id)\")) | .id"`
+  fi
 
   if [ -z $existing_project_id ]; then
     echo "No existing project found. Attempting to create a new one..."
+
+
     if [ -z $project_name ]; then
       echo "No project name was provided. Exiting..."
       exit 1
