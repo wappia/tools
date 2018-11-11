@@ -64,7 +64,7 @@ if [ "$toggl" = true ]; then
   epic_id=`echo $story | jq .epic_id`
   epic_name=`curl -s -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/epics/$epic_id?token=$token" | jq -r .name`
 
-  toggl "$story_name ($story_id)" $epic_id $epic_name
+  toggl "$story_name ($story_id)" $epic_id "$epic_name"
   echo
 fi
 
