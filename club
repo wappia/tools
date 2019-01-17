@@ -85,4 +85,8 @@ if [ "$existing_branch" = 'null' ]; then
 else
   git fetch
   git checkout $existing_branch
+
+  if [ $? -ne 0 ]; then
+    git checkout master && git pull && git checkout -b $user/ch$story_id/${convert,,} && git push -u
+  fi
 fi
