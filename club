@@ -73,7 +73,9 @@ convert=`echo $story_name | sed 's/[^a-zA-Z]/-/g'`
 existing_branch=`echo $story | jq -r '.branches[0].name'`
 
 if [ "$existing_branch" = 'null' ]; then
-  git checkout master && git pull && git checkout -b $user/ch$story_id/${convert,,} && git push -u
+  branch_name=`echo "$user/ch$story_id/${convert,,}" | cut -b 1-60`
+
+  git checkout master && git pull && git checkout -b $branch_name && git push -u
 
   if [ $? -eq 0 ]; then
     echo Moving story to \"In Progress\"
