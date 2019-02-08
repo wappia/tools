@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+git fetch
+git log $(git describe --tags --abbrev=0)..origin/master --oneline | wc -l
