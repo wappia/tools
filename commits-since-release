@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+git fetch
+num_commits=`git log $(git describe --tags --abbrev=0)..origin/master --oneline | wc -l`
+echo $num_commits
+
+if [ "$num_commits" = "0" ]; then 
+  exit 1
+else 
+  exit 0
+fi
