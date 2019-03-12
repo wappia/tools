@@ -1,0 +1,58 @@
+#!/bin/bash
+
+show_help() {
+  echo "
+    Usage:
+    multiclub <STORY_ID> <DESCRIPTION>
+
+    EXAMPLES:
+    multiclub 1234
+  "
+  exit 0
+}
+
+story_id="$1"
+description="$2"
+user="$tools_clubhouse_user"
+token="$tools_clubhouse_api_token"
+
+if [ -z "$story_id" ]; then
+  show_help
+fi
+
+if [ -z "$description" ]; then
+  show_help
+fi
+
+re='^[0-9]+$'
+if ! [[ $story_id =~ $re ]] ; then
+   echo "error: Clubhouse ID not a number" >&2
+   exit 1
+fi
+
+story=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/stories/$story_id?token=$token"`
+
+story_name=`echo $story | jq -r '.name'`
+epic=`echo $story | jq -r '.epic_id'`
+project=`echo $story | jq -r '.project_id'`
+
+if [ "$story_name" = 'null' ]; then
+  echo "Could not extract name, exiting..."
+  echo
+  echo $story
+  exit 2
+fi
+
+for mf in game browse translate settings homeless onboarding auth; do
+  name="$mf $story_name"
+  echo $name
+  curl --silent -X POST -H "Content-Type: application/json" -d "{ 
+    \"description\": \"$description\",
+    \"epic_id\": $epic,
+    \"project_id\": $project,
+    \"labels\": [{\"name\": \"web-${mf}\"}],
+    \"name\": \"$name\",
+    \"story_links\": [{\"object_id\": \"$story_id\", \"verb\": \"blocks\"}],
+    \"workflow_state_id\": \"500002055\"
+  }" -L "https://api.clubhouse.io/api/v2/stories?token=$token"
+done
