@@ -57,7 +57,7 @@ for mf in game browse translate settings homeless onboarding auth; do
     \"project_id\": $project,
     \"labels\": [{\"name\": \"web-${mf}\"}],
     \"name\": \"$name\",
-    \"story_links\": [{\"object_id\": \"$story_id\", \"verb\": \"blocks\"}],
+    \"story_links\": [{\"object_id\": \"$story_id\", \"verb\": \"related to\"}],
     \"workflow_state_id\": \"500002055\"
   }" -L "https://api.clubhouse.io/api/v2/stories?token=$token"
 done
