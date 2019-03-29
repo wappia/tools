@@ -11,7 +11,7 @@ show_help() {
     multi <STORY_ID> <DESCRIPTION>
 
     EXAMPLES:
-    multi 1234
+    multi 1234 'A description'
   "
   exit 0
 }
@@ -49,7 +49,7 @@ if [ "$story_name" = 'null' ]; then
 fi
 
 for mf in game browse translate settings homeless onboarding auth; do
-  name="$mf $story_name"
+  name="$mf: $story_name"
   echo $name
   curl --silent -X POST -H "Content-Type: application/json" -d "{ 
     \"description\": \"$description\",
@@ -57,7 +57,7 @@ for mf in game browse translate settings homeless onboarding auth; do
     \"project_id\": $project,
     \"labels\": [{\"name\": \"web-${mf}\"}],
     \"name\": \"$name\",
-    \"story_links\": [{\"object_id\": \"$story_id\", \"verb\": \"related to\"}],
+    \"story_links\": [{\"object_id\": \"$story_id\", \"verb\": \"relates to\"}],
     \"workflow_state_id\": \"500002055\"
   }" -L "https://api.clubhouse.io/api/v2/stories?token=$token"
 done
