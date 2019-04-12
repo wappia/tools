@@ -4,7 +4,7 @@ token=$tools_toggl_api_token
 wid=$tools_toggl_workspace_id
 cid=$tools_toggl_client_id
 default_pid=$tools_toggl_project_id
-description="$1"
+description=`echo "$1" | tr '"' "'"`
 project_id="$2"
 project_name="$3"
 
