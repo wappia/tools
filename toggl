@@ -33,7 +33,7 @@ result=`curl -s -u $token:api_token -H "Content-Type: application/json" -d "{\"t
 data=`echo $result | jq .`
 
 if [ -z "$data" ]; then
-  printf "\nFailed to start Toggl timer\nReason: $1\n"
+  printf "\nFailed to start Toggl timer\nReason: $result\n"
 else
   echo 'Successfully started Toggl timer'
 fi
