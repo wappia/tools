@@ -2,28 +2,30 @@
 
 help_text="
 Usage:
-club [-t] [--toggl] <STORY_ID>
+club [-n] [--notoggl] <STORY_ID>
 
--t, --toggl
-  Start a Toggl time entry for the provided story id
+-n, --notoggl
+  Disable toggl time entries.
 
 EXAMPLES:
 club 1234
-club -t 1234
+club -n 1234
 "
+
+toggl=true
 
 while [[ $# -gt 0 ]]
 do
   case $1 in
-    -t|--toggl)
-      toggl=true
+    -n|--notoggl)
+      toggl=false
       shift 
       ;;
     help)
       echo "$help_text"
       exit 0
       ;;
-    *)    
+    *)
       story_id=$1
       shift 
       ;;
@@ -60,20 +62,17 @@ if [ "$story_name" = 'null' ]; then
   exit 2
 fi
 
-if [ "$toggl" = true ]; then
-  epic_id=`echo $story | jq .epic_id`
-  epic_name=`curl -s -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v2/epics/$epic_id?token=$token" | jq -r .name`
+converted_story_name=`echo $story_name | sed 's/[^a-zA-Z]/-/g'`
 
-  toggl "$story_name ($story_id)" $epic_id "$epic_name"
+if [ "$toggl" = true ]; then
+  toggl "$story_id/${converted_story_name,,}"
   echo
 fi
-
-convert=`echo $story_name | sed 's/[^a-zA-Z]/-/g'`
 
 existing_branch=`echo $story | jq -r '.branches[0].name'`
 
 if [ "$existing_branch" = 'null' ]; then
-  branch_name=`echo "$user/ch$story_id/${convert,,}" | cut -b 1-60`
+  branch_name=`echo "$user/ch$story_id/${converted_story_name,,}" | cut -b 1-60`
 
   git checkout master && git pull && git checkout -b $branch_name && git push -u
 
@@ -89,6 +88,6 @@ else
   git checkout $existing_branch
 
   if [ $? -ne 0 ]; then
-    git checkout master && git pull && git checkout -b $user/ch$story_id/${convert,,} && git push -u
+    git checkout master && git pull && git checkout -b $user/ch$story_id/${converted_story_name,,} && git push -u
   fi
 fi

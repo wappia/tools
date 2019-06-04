@@ -1,38 +1,31 @@
 #!/bin/bash
 
 token=$tools_toggl_api_token
-wid=$tools_toggl_workspace_id
-cid=$tools_toggl_client_id
-default_pid=$tools_toggl_project_id
-description=`echo "$1" | tr '"' "'"`
-project_id="$2"
-project_name="$3"
+project_id=$tools_toggl_project_id
+description="$1"
+
+if [ "$1" == "help" ] || [ "$1" == "" ]; then
+cat << EOF
+USAGE:
+  toggl <description>
+
+  description
+    The description that will be displayed on the time entry
+
+ENVIRONMENT VARIABLES:
+  tools_toggl_api_token
+    API token for Toggl
+
+  tools_toggl_project_id
+    Id for the project that time entries should be associated with
+EOF
+  exit 0
+fi
 
 curl -s -o /dev/null -u $token:api_token -X GET https://www.toggl.com/api/v8/me
 
 if [ ! -z $project_id ]; then
-  if [ "$project_id" = null ]; then
-    existing_project_id=$default_pid
-  else
-    existing_project_id=`curl -s -u $token:api_token -X GET https://www.toggl.com/api/v8/workspaces/$wid/projects | jq ".[] | select(.name|test(\"($project_id)\")) | .id"`
-  fi
-
-  if [ -z $existing_project_id ]; then
-    echo "No existing project found. Attempting to create a new one..."
-
-
-    if [ -z $project_name ]; then
-      echo "No project name was provided. Exiting..."
-      exit 1
-    else
-      project_name="$3 ($2)"
-      new_project_id=`curl -s -u $token:api_token -H "Content-Type: application/json" -d "{\"project\":{\"name\":\"$project_name\",\"wid\":$wid,\"is_private\":false,\"cid\":$cid,\"color\":3}}" -X POST https://www.toggl.com/api/v8/projects | jq .data.id`
-      echo "Created new project \"$project_name\""
-      pid=",\"pid\":$new_project_id"
-    fi
-  else
-    pid=",\"pid\":$existing_project_id"
-  fi
+  pid=",\"pid\":$project_id"
 fi
 
 result=`curl -s -u $token:api_token -H "Content-Type: application/json" -d "{\"time_entry\":{\"description\":\"$description\"$pid,\"created_with\":\"tools/toggl\"}}" -X POST https://www.toggl.com/api/v8/time_entries/start`
