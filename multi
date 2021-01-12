@@ -5,7 +5,6 @@ show_help() {
   ========= MULTI ===============
 
   Awesome little tool that creates clones from a parent ticket, sets the correct epic and project as well as relationship to parent.
-  It is so cute, you need to see: https://i.imgur.com/BHdgU8h.gif
 
     Usage:
     multi <STORY_ID> <DESCRIPTION>

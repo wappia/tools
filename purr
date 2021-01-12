@@ -33,6 +33,7 @@ fi
 echo Creating pull request...
 hub pull-request -r "$tools_reviewers" -F- <<<"$name 
 
-### Clubhouse
-[ch$clubhouse_id](https://app.clubhouse.io/$organisation/story/$clubhouse_id)
+[ch-$clubhouse_id]
 "
+
+# [ch$clubhouse_id](https://app.clubhouse.io/$organisation/story/$clubhouse_id)

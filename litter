@@ -1,0 +1,81 @@
+#!/bin/bash
+
+show_help() {
+  echo "
+  ========= LITTER ============
+
+  Creates a set of stories that are all related to each-other. Project and epics are set correctly.
+
+    Usage:
+    litter <EPIC_ID> <NAME> <PROJECT_NAME_1> [PROJECT_NAME_2] ... [PROJECT_NAME_N]
+
+    EXAMPLES:
+    litter 123 'Add video game step' web-ui web-app design
+  "
+  exit 0
+}
+epic_id="$1" ; shift
+name="$1" ; shift
+user="$tools_clubhouse_user"
+token="$tools_clubhouse_api_token"
+
+if [ -z "$epic_id" ]; then
+  show_help
+  exit 2
+fi
+
+if [ -z "$name" ]; then
+  show_help
+  exit 3
+fi
+
+re='^[0-9]+$'
+if ! [[ $epic_id =~ $re ]] ; then
+   echo "error: Clubhouse epic ID not a number" >&2
+   exit 1
+fi
+
+projects_json=`curl --silent -X GET -H "Content-Type: application/json" -L "https://api.clubhouse.io/api/v3/projects?token=$token"`
+
+story_ids=()
+
+while test $# -gt 0
+do
+  project_name="$1"
+  project_id=`echo $projects_json | jq ".[] | select(.name == \"$project_name\") | .id"`
+
+  cmd=$(cat <<-END
+    curl --silent -X POST -H "Content-Type: application/json" -d '{ 
+        "description": "",
+        "epic_id": $epic_id,
+        "project_id": $project_id,
+        "name": "$name",
+        "story_links": []
+      }' -L "https://api.clubhouse.io/api/v2/stories?token=$token"
+END
+  )
+  story_json=$(eval "$cmd")
+
+  echo $story_json
+
+  story_ids+=(`echo $story_json | jq ".id"`)
+  shift
+done
+
+# loop through all combinations of stories and create relationships for them
+stories_count="${#story_ids[@]}"
+for ((i=0;i<$stories_count;i++))
+do
+  for ((ii=$(($i + 1));ii<$stories_count;ii++))
+  do
+    if [ $s != $story_id ]; then
+      curl --silent -X POST -H "Content-Type: application/json" -d "{ 
+        \"object_id\": ${story_ids[i]},
+        \"subject_id\": ${story_ids[ii]},
+        \"verb\": \"relates to\"
+      }" -L "https://api.clubhouse.io/api/v2/story-links?token=$token"
+    fi
+  done
+
+done
+

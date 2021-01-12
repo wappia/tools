@@ -12,7 +12,7 @@ club 1234
 club -n 1234
 "
 
-toggl=true
+toggl=false
 
 while [[ $# -gt 0 ]]
 do
